@@ -55,6 +55,7 @@ class Application(tk.Tk):
         self.staff_frame = tk.Frame(self.container, bg="#2c3e50")
         self.patient_frame = tk.Frame(self.container, bg="#2c3e50")
         self.appointment_frame = tk.Frame(self.container, bg="#2c3e50")
+        self.sign_frame = tk.Frame(self.container, bg="#2c3e50")
 
         # ########          H           O               M           E           #######
         # Create home content (replace with your desired widgets)
@@ -63,13 +64,18 @@ class Application(tk.Tk):
         self.label_title = tk.Label(self.navbar, text="St. Mark Hospital - ", bg="skyblue", fg="black",
                                     font=("Arial", 24))
         self.label_title.pack(side=tk.TOP, padx=10, pady=5)
+
+        #Sign in/out Button
+        self.sign_button = tk.Button(self.navbar, text="Sign Out", command=self.show_sign, bg="#2c3e50", fg="black")
+        self.sign_button.pack(side=tk.LEFT, padx=10)
+
         home_label = tk.Label(self.home_frame, text="Welcome to the Home Section!")
         home_label.pack()
         # Content Frame with Light Blue Background
         self.content_frame = tk.Frame(self.home_frame, bg="#b2e0f0")  # Light blue background
         self.content_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
 
-        # Buttons
+        # Buttons at home page
         patient_button = tk.Button(self.content_frame, text="PATIENTS", command=self.show_patient, bg="skyblue",
                                    fg="black")
         patient_button.pack(pady=20)
@@ -82,6 +88,74 @@ class Application(tk.Tk):
         appointment_button = tk.Button(self.content_frame, text="APPOINTMENT", command=self.show_appointment,
                                        bg="skyblue", fg="black")
         appointment_button.pack(pady=20)
+
+        ##########################
+        #####################_____________           S      I       G       N       I       N       G       ____________###
+
+        self.navbar = tk.Frame(self.sign_frame, bg="skyblue")
+        self.navbar.pack(side=tk.TOP, fill=tk.X)
+        self.label_title = tk.Label(self.navbar, text="St. Mark Hospital -  ", bg="skyblue", fg="black",
+                                    font=("Arial", 24))
+        self.label_title.pack(side=tk.TOP, padx=10, pady=5)
+
+        sign_label = tk.Label(self.sign_frame, text="Every Step of the Way")
+        sign_label.pack()
+
+        #Enter the user and credentials
+        users = {
+            "shaddy": "shaddy123",
+            "mark": "mark123",
+            "nurse": "nurse123"
+        }
+
+        # Function to validate sign-in credentials
+        def validate_signin():
+            username = self.entry_username.get()
+            password = self.entry_password.get()
+
+            if username in users and users[username] == password:
+                messagebox.showinfo("Success", "Successfully Signed In" )
+                show_dashboard()
+
+                self.clear_staff_fields()
+            else:
+                self.clear_sign_fields()
+                messagebox.showerror("Login Error", "Invalid username or password.")
+
+
+        def show_dashboard():
+            # Hide finance frame
+            self.finance_frame.pack_forget()
+            self.appointment_frame.pack_forget()
+            self.patient_frame.pack_forget()
+            self.staff_frame.pack_forget()
+            self.sign_frame.pack_forget()
+
+            # Show home frame
+            self.home_frame.pack(side="top", fill="both", expand=True)
+
+        # Sign Entry Form
+        self.entry_frame = tk.Frame(self.sign_frame, bg="#b2e0f0")  # Light blue background
+        self.entry_frame.pack(pady=10)
+
+        self.label_username = tk.Label(self.entry_frame, text="Username:")
+        self.label_username.grid(row=1, column=0, padx=5, pady=5)
+        self.entry_username = tk.Entry(self.entry_frame)
+        self.entry_username.grid(row=1, column=1, padx=5, pady=5)
+
+        self.label_password = tk.Label(self.entry_frame, text="Password:")
+        self.label_password.grid(row=2, column=0, padx=5, pady=5)
+        #self.entry_password = tk.Entry(self.entry_frame, font="Arial", width=30, show="*")
+        #  self.entry_password.pack(pady=10)
+        # self.entry_password.insert(0, "Password")
+        self.entry_password = tk.Entry(self.entry_frame)
+        self.entry_password.grid(row=2, column=1, padx=5, pady=5)
+
+        button_signin = tk.Button(self.sign_frame, text="Sign In", font="Arial", bg="Red", fg="white",
+                                  command=validate_signin)
+        button_signin.pack(pady=20)
+
+
 
         ####        F       I       N       A       N       C       E       ######
 
@@ -194,7 +268,7 @@ class Application(tk.Tk):
         self.appointment_table.pack(fill=tk.BOTH, expand=True)
 
         # Initially show home frame
-        self.home_frame.pack(side="top", fill="both", expand=True)
+        self.sign_frame.pack(side="top", fill="both", expand=True)
 
         ############
 
@@ -206,11 +280,11 @@ class Application(tk.Tk):
         self.patient = []
         self.patient_count = 243  # Initialize patient count
 
-        #navbar
+        # navbar
         self.navbar = tk.Frame(self.patient_frame, bg="skyblue")
         self.navbar.pack(side=tk.TOP, fill=tk.X)
 
-        #title
+        # title
         self.label_title = tk.Label(self.navbar, text="St. Mark Hospital -  Patient-PAGE", bg="skyblue", fg="black",
                                     font=("Arial", 24))
         self.label_title.pack(side=tk.TOP, padx=10, pady=5)
@@ -218,7 +292,6 @@ class Application(tk.Tk):
         # Home Button
         self.home_button = tk.Button(self.navbar, text="Home", command=self.show_home, bg="#2c3e50", fg="black")
         self.home_button.pack(side=tk.LEFT, padx=10)
-
 
         patient_label = tk.Label(self.patient_frame, text="Every Life Matters")
         patient_label.pack()
@@ -258,7 +331,8 @@ class Application(tk.Tk):
         self.entry_registration.grid(row=6, column=1, padx=5, pady=5)
 
         # Add Patient Button
-        self.add_patient_button = tk.Button(self.patient_frame, text="Add Patient", command=self.add_patient, bg="#e74c3c",
+        self.add_patient_button = tk.Button(self.patient_frame, text="Add Patient", command=self.add_patient,
+                                            bg="#e74c3c",
                                             fg="white")
         self.add_patient_button.pack(pady=10)
 
@@ -285,12 +359,9 @@ class Application(tk.Tk):
         # Pack the staff table
         self.patient_table.pack(fill=tk.BOTH, expand=True)
         # Initially show home frame
-        self.home_frame.pack(side="top", fill="both", expand=True)
+        self.sign_frame.pack(side="top", fill="both", expand=True)
 
-
-
-
-        #############                                                               ############
+        ############
         ###____________S        T       A       F       F _________  ###########
         # ###Stafff####
         # Create staff
@@ -380,8 +451,8 @@ class Application(tk.Tk):
         # Pack the staff table
         self.staff_table.pack(fill=tk.BOTH, expand=True)
 
-        # Initially show home frame
-        self.home_frame.pack(side="top", fill="both", expand=True)
+        # Initially show Sign_Frame frame
+        self.sign_frame.pack(side="top", fill="both", expand=True)
 
     def show_home(self):
         # Hide finance frame
@@ -389,8 +460,9 @@ class Application(tk.Tk):
         self.appointment_frame.pack_forget()
         self.patient_frame.pack_forget()
         self.staff_frame.pack_forget()
+        self.sign_frame.pack_forget()
 
-        # Show home frame
+        # Show sign frame
         self.home_frame.pack(side="top", fill="both", expand=True)
 
     def show_appointment(self):
@@ -398,6 +470,7 @@ class Application(tk.Tk):
         self.home_frame.pack_forget()
         self.patient_frame.pack_forget()
         self.staff_frame.pack_forget()
+        self.sign_frame.pack_forget()
 
         self.appointment_frame.pack(side="top", fill="both", expand=True)
 
@@ -407,6 +480,7 @@ class Application(tk.Tk):
         self.appointment_frame.pack_forget()
         self.patient_frame.pack_forget()
         self.staff_frame.pack_forget()
+        self.sign_frame.pack_forget()
 
         # Show finance frame
         self.finance_frame.pack(side="top", fill="both", expand=True)
@@ -417,9 +491,21 @@ class Application(tk.Tk):
         self.appointment_frame.pack_forget()
         self.finance_frame.pack_forget()
         self.staff_frame.pack_forget()
+        self.sign_frame.pack_forget()
 
         # Show finance frame
         self.patient_frame.pack(side="top", fill="both", expand=True)
+
+    def show_sign(self):
+        # Hide Sign frame
+        self.home_frame.pack_forget()
+        self.appointment_frame.pack_forget()
+        self.finance_frame.pack_forget()
+        self.staff_frame.pack_forget()
+        self.sign_frame.pack_forget()
+
+        # Show finance frame
+        self.sign_frame.pack(side="top", fill="both", expand=True)
 
     def show_staff(self):
         # Hide home frame
@@ -427,6 +513,7 @@ class Application(tk.Tk):
         self.appointment_frame.pack_forget()
         self.patient_frame.pack_forget()
         self.finance_frame.pack_forget()
+        self.sign_frame.pack_forget()
 
         # Show finance frame
         self.staff_frame.pack(side="top", fill="both", expand=True)
@@ -472,7 +559,7 @@ class Application(tk.Tk):
     def add_staff(self):
         firsta_name = self.entry_firsta_name.get()
         lasta_name = self.entry_lasta_name.get()
-        #registration_number = self.entry_registration_number.get()
+        # registration_number = self.entry_registration_number.get()
         practicing_number = self.entry_practicing_number.get()
         address = self.entry_address.get()
         phone = self.entry_phone.get()
@@ -507,7 +594,6 @@ class Application(tk.Tk):
     def clear_staff_fields(self):
         self.entry_firsta_name.delete(0, tk.END)
         self.entry_lasta_name.delete(0, tk.END)
-        self.entry_registration_number.delete(0, tk.END)
         self.entry_practicing_number.delete(0, tk.END)
         self.entry_address.delete(0, tk.END)
         self.entry_phone.delete(0, tk.END)
@@ -556,6 +642,10 @@ class Application(tk.Tk):
         self.entry_staff_num.delete(0, tk.END)
         self.entry_appointment_date.delete(0, tk.END)
         self.entry_appointment_time.delete(0, tk.END)
+
+    def clear_sign_fields(self):
+        self.entry_username.delete(0, tk.END)
+        self.entry_password.delete(0, tk.END)
 
 
 if __name__ == "__main__":
